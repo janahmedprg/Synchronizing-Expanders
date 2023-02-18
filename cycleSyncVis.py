@@ -11,13 +11,16 @@ colormap = plt.get_cmap('hsv')
 norm = mpl.colors.Normalize(0.0, 2*np.pi)
 
 # Number of nodes in a cycle
-n=4
+n=5
 
 # Setting initial phase of nodes
 theta = np.zeros(n)
 for i in range(n):
     # theta[i] = random.uniform(0,2*np.pi)
-    theta[i] = i*2*np.pi/n #+ 1.3/(i+1)
+    theta[i] = i*2*np.pi/n
+
+perturbation = 1
+theta[3] += perturbation
 
 # Positioning the nodes in a circle
 x = np.zeros(n)
@@ -36,11 +39,11 @@ for i in range(n):
 def sysOde(t,thet):
     ret = []
     for i in range(n):
-        ret.append(2-(np.sin(thet[i]-thet[(i+1)%n])+np.sin(thet[i]-thet[i-1])))
+        ret.append(-(np.sin(thet[i]-thet[(i+1)%n])+np.sin(thet[i]-thet[i-1])))
         # print(f"2-(np.sin(thet[{i}]-thet[{(i+1)%n}])+np.sin(thet[{i}]-thet[{i-1}]))",i)
     return ret
 
-ts = np.linspace(0,50,300)
+ts = np.linspace(0,50,100)
 sol = solve_ivp(sysOde,(0,50),theta,t_eval=ts)
 
 # Animation settings
@@ -53,6 +56,9 @@ def animate(t):
     ax.plot(x[edges.T], y[edges.T], linestyle='-', color='black',linewidth =1) 
 
 # Plotting    
-ani = FuncAnimation(plt.gcf(), animate, interval = 150)
-# plt.plot(sol.t,sol.y.T)
+# ani = FuncAnimation(plt.gcf(), animate, interval = 10000)
+plt.plot(sol.t,np.mod(sol.y.T,2*np.pi))
+plt.title("Roots of unity with 1 oscilator purturbed by " + str(perturbation) + " rad")
+plt.xlabel("Time")
+plt.ylabel("Phase in radians")
 plt.show()
