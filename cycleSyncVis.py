@@ -19,7 +19,7 @@ for i in range(n):
     # theta[i] = random.uniform(0,2*np.pi)
     theta[i] = i*2*np.pi/n
 
-perturbation = 1
+perturbation = 1.0205
 theta[3] += perturbation
 
 # Positioning the nodes in a circle
@@ -43,7 +43,7 @@ def sysOde(t,thet):
         # print(f"2-(np.sin(thet[{i}]-thet[{(i+1)%n}])+np.sin(thet[{i}]-thet[{i-1}]))",i)
     return ret
 
-ts = np.linspace(0,50,100)
+ts = np.linspace(0,50,1000)
 sol = solve_ivp(sysOde,(0,50),theta,t_eval=ts)
 
 # Animation settings
@@ -56,9 +56,9 @@ def animate(t):
     ax.plot(x[edges.T], y[edges.T], linestyle='-', color='black',linewidth =1) 
 
 # Plotting    
-# ani = FuncAnimation(plt.gcf(), animate, interval = 10000)
+# ani = FuncAnimation(plt.gcf(), animate, interval = 1000,cache_frame_data=False)
 plt.plot(sol.t,np.mod(sol.y.T,2*np.pi))
-plt.title("Roots of unity with 1 oscilator purturbed by " + str(perturbation) + " rad")
+plt.title("Roots of unity with 1 oscilator perturbed by " + str(perturbation) + " rad")
 plt.xlabel("Time")
 plt.ylabel("Phase in radians")
 plt.show()
